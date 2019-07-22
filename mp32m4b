@@ -1,0 +1,54 @@
+#!/bin/sh
+# Dependencies: lame, faac and findutils
+
+usage() {
+  local prg="$1"
+  echo "Tool to convert mp3 files to m4b files".
+  echo "Takes a list of mp3 files to convert on stdin (absolute paths)."
+  echo "Result stored in '<output directory>' in audiobook directory."
+  echo ""
+  echo "Usage: cat <mp3 list> | $prg [options]"
+  echo ""
+  echo "Help options:"
+  echo "    -h    Short help on using $prg"
+  echo ""
+  echo "Program options:"
+  echo "    -a    Author"
+  echo "    -b    Book title"
+  echo "    -o    Output directory"
+  echo ""
+  echo "Example:"
+  echo "    ls ~/book/**.mp3 | sort -n | $prg -a \"John Doe\" -b \"Seeds\""
+}
+
+AUTHOR="Unkown author"
+BOOK="Unkown title"
+OUTDIR="$(pwd)"
+while getopts ":a:b:o:h" option
+do
+  case "${option}" in
+    a)
+      AUTHOR=${OPTARG}
+      ;;
+    b)
+      BOOK=${OPTARG}
+      ;;
+    o)
+      OUTDIR=${OPTARG}
+      ;;
+    h)
+      usage "$(basename "$0")"
+      exit 1;
+      ;;
+  esac
+done
+
+if [ ! -d "$OUTDIR" ]
+then
+  echo "Output directory does not exist." 2>&1
+  exit 1
+fi
+
+xargs -I % -n 1 lame --mp3input --decode % - | \
+  faac --artist "$AUTHOR" --album "$BOOK" \
+    --ignorelength -w -q 80 -o "$OUTDIR/$AUTHOR-$BOOK.m4b" -
