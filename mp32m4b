@@ -24,7 +24,8 @@ usage() {
 AUTHOR="Unkown author"
 BOOK="Unkown title"
 OUTDIR="$(pwd)"
-while getopts ":a:b:o:h" option
+VERBOSE=0
+while getopts "a:b:o:hv" option
 do
   case "${option}" in
     a)
@@ -35,6 +36,9 @@ do
       ;;
     o)
       OUTDIR=${OPTARG}
+      ;;
+    v)
+      VERBOSE=1
       ;;
     h)
       usage "$(basename "$0")"
@@ -47,6 +51,11 @@ if [ ! -d "$OUTDIR" ]
 then
   echo "Output directory does not exist." 1>&2
   exit 1
+fi
+
+if [ $VERBOSE -eq 0 ]
+then
+  exec 3>&2 2>/dev/null
 fi
 
 xargs -I % -n 1 lame --mp3input --decode % - | \
