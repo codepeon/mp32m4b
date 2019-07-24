@@ -45,7 +45,7 @@ done
 
 if [ ! -d "$OUTDIR" ]
 then
-  echo "Output directory does not exist." 2>&1
+  echo "Output directory does not exist." 1>&2
   exit 1
 fi
 
