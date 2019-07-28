@@ -34,15 +34,15 @@ OUTDIR="$(pwd)"
 VERBOSE=0
 while getopts "a:b:o:hv" option
 do
-  case "${option}" in
+  case "$option" in
     a)
-      AUTHOR=${OPTARG}
+      AUTHOR=$OPTARG
       ;;
     b)
-      BOOK=${OPTARG}
+      BOOK=$OPTARG
       ;;
     o)
-      OUTDIR=${OPTARG}
+      OUTDIR=$OPTARG
       ;;
     v)
       VERBOSE=1
