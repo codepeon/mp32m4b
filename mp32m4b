@@ -1,5 +1,5 @@
 #!/bin/sh
-# Dependencies: lame, faac and findutils
+# Dependencies: coreutils, lame, faac and findutils
 
 usage() {
   local prg="$1"
@@ -19,6 +19,13 @@ usage() {
   echo ""
   echo "Example:"
   echo "    ls ~/book/**.mp3 | sort -n | $prg -a \"John Doe\" -b \"Seeds\""
+}
+
+check_env() {
+  return $(for prg in $@
+    do
+      command -v $prg >/dev/null || echo "Command $prg not found."
+    done | tee /dev/stderr | wc -l)
 }
 
 AUTHOR="Unkown author"
@@ -46,6 +53,8 @@ do
       ;;
   esac
 done
+
+check_env xargs lame faac || exit 1
 
 if [ ! -d "$OUTDIR" ]
 then
