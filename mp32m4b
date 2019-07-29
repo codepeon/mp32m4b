@@ -22,10 +22,11 @@ usage() {
 }
 
 check_env() {
-  return $(for prg in $@
+  local nbr=$(for prg in $@
     do
-      command -v $prg >/dev/null || echo "Command $prg not found."
-    done | tee /dev/stderr | wc -l)
+      command -v $prg || echo "Command $prg not found." 1>&2
+    done | wc -l)
+  return $(($# - $nbr))
 }
 
 AUTHOR="Unkown author"
