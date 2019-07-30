@@ -32,7 +32,7 @@ check_env() {
 AUTHOR="Unkown author"
 BOOK="Unkown title"
 OUTDIR="$(pwd)"
-VERBOSE=0
+OUTPUT="/dev/null"
 while getopts "a:b:o:hv" option
 do
   case "$option" in
@@ -46,7 +46,7 @@ do
       OUTDIR=$OPTARG
       ;;
     v)
-      VERBOSE=1
+      OUTPUT="/dev/tty"
       ;;
     h)
       usage "$(basename "$0")"
@@ -63,11 +63,12 @@ then
   exit 1
 fi
 
-if [ $VERBOSE -eq 0 ]
-then
-  exec 3>&2 2>/dev/null
-fi
-
-xargs -I % -n 1 lame --mp3input --decode % - | \
+xargs -I % -n 1 lame  -h --mp3input --decode % - 2>$OUTPUT | \
   faac --artist "$AUTHOR" --album "$BOOK" \
-    --ignorelength -w -q 80 -o "$OUTDIR/$AUTHOR-$BOOK.m4b" -
+  --ignorelength -w -q 80 -o "$OUTDIR/$AUTHOR-$BOOK.m4b" - 2>$OUTPUT
+
+if [ $? -ne 0 ]
+then
+ echo "Command exited with error, run with -v for more info" 1>&2
+ exit 1
+fi
