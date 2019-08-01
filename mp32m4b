@@ -3,9 +3,8 @@
 
 usage() {
   local prg="$1"
-  echo "Tool to convert mp3 files to m4b files".
+  echo "A tool to convert mp3 files to one m4b file."
   echo "Takes a list of mp3 files to convert on stdin (absolute paths)."
-  echo "Result stored in '<output directory>' in audiobook directory."
   echo ""
   echo "Usage: cat <mp3 list> | $prg [options]"
   echo ""
