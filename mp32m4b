@@ -2,7 +2,7 @@
 # Dependencies: coreutils, lame, faac and findutils
 
 usage() {
-  local prg="$1"
+  prg="$1"
   echo "A tool to convert mp3 files to one m4b file."
   echo "Takes a list of mp3 files to convert on stdin (absolute paths)."
   echo ""
@@ -21,11 +21,11 @@ usage() {
 }
 
 check_env() {
-  local nbr=$(for prg in $@
+  nbr=$(for prg in "$@"
     do
-      command -v $prg || echo "Command $prg not found." 1>&2
+      command -v "$prg" || echo "Command $prg not found." 1>&2
     done | wc -l)
-  return $(($# - $nbr))
+  return $(($# - nbr))
 }
 
 AUTHOR="Unkown author"
@@ -51,6 +51,8 @@ do
       usage "$(basename "$0")"
       exit 1;
       ;;
+    *)
+      ;;
   esac
 done
 
@@ -62,12 +64,10 @@ then
   exit 1
 fi
 
-xargs -I % -n 1 lame  -h --mp3input --decode % - 2>$OUTPUT | \
+if ! xargs -I % -n 1 lame  -h --mp3input --decode % - 2>$OUTPUT | \
   faac --artist "$AUTHOR" --album "$BOOK" \
   --ignorelength -w -q 80 -o "$OUTDIR/$AUTHOR-$BOOK.m4b" - 2>$OUTPUT
-
-if [ $? -ne 0 ]
 then
- echo "Command exited with error, run with -v for more info" 1>&2
- exit 1
+  echo "Command exited with error, run with -v for more info" 1>&2
+  exit 1
 fi
