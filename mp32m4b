@@ -8,7 +8,7 @@ error() {
 }
 
 usage() {
-  prg="$1"
+  prg="$(basename "$0")"
   echo "A tool to convert mp3 files to one m4b file."
   echo "Takes a list of mp3 files to convert on stdin (absolute paths)."
   echo ""
@@ -57,7 +57,7 @@ do
       OUTPUT="/dev/tty"
       ;;
     h)
-      usage "$(basename "$0")"
+      usage
       exit 0;
       ;;
     :)
