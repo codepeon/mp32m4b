@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 # Dependencies: coreutils, lame, faac and findutils
 
 usage() {
