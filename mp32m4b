@@ -1,6 +1,12 @@
 #!/usr/bin/env sh
 # Dependencies: coreutils, lame, faac and findutils
 
+error() {
+  prg="$(basename "$0")"
+  msg="$1"
+  echo "$prg: $msg" 1>&2
+}
+
 usage() {
   prg="$1"
   echo "A tool to convert mp3 files to one m4b file."
@@ -23,16 +29,19 @@ usage() {
 check_env() {
   nbr=$(for prg in "$@"
     do
-      command -v "$prg" || echo "Command $prg not found." 1>&2
+      command -v "$prg" || error "Command $prg not found."
     done | wc -l)
   return $(($# - nbr))
 }
+
+check_env xargs lame faac || exit 1
 
 AUTHOR="Unkown author"
 BOOK="Unkown title"
 OUTDIR="$(pwd)"
 OUTPUT="/dev/null"
-while getopts "a:b:o:hv" option
+OPTERR=0
+while getopts ":a:b:o:hv" option 2>/dev/null
 do
   case "$option" in
     a)
@@ -49,18 +58,23 @@ do
       ;;
     h)
       usage "$(basename "$0")"
-      exit 1;
+      exit 0;
       ;;
-    *)
+    :)
+      error "Invalid option -$OPTARG specified."
+      OPTERR=1
+      ;;
+    ?)
+      error "Option -$OPTARG requires an argument."
+      OPTERR=1
       ;;
   esac
 done
-
-check_env xargs lame faac || exit 1
+[ $OPTERR -ne 0 ] && exit 1
 
 if [ ! -d "$OUTDIR" ]
 then
-  echo "Output directory does not exist." 1>&2
+  error "Output directory does not exist."
   exit 1
 fi
 
@@ -68,6 +82,6 @@ if ! xargs -I % -n 1 lame  -h --mp3input --decode % - 2>$OUTPUT | \
   faac --artist "$AUTHOR" --album "$BOOK" \
   --ignorelength -w -q 80 -o "$OUTDIR/$AUTHOR-$BOOK.m4b" - 2>$OUTPUT
 then
-  echo "Command exited with error, run with -v for more info" 1>&2
+  error "Command exited with error, run with -v for more info."
   exit 1
 fi
