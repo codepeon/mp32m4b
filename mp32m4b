@@ -78,7 +78,7 @@ then
   exit 1
 fi
 
-if ! xargs -I % -n 1 lame  -h --mp3input --decode % - 2>$OUTPUT | \
+if ! xargs -I % -n 1 lame -h --mp3input --decode % - 2>$OUTPUT | \
   faac --artist "$AUTHOR" --album "$BOOK" \
   --ignorelength -w -q 80 -o "$OUTDIR/$AUTHOR-$BOOK.m4b" - 2>$OUTPUT
 then
