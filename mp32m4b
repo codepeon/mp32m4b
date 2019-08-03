@@ -74,7 +74,7 @@ done
 
 if [ ! -d "$OUTDIR" ]
 then
-  error "Output directory does not exist."
+  error "Output directory $OUTDIR does not exist."
   exit 1
 fi
 
