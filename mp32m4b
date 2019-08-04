@@ -27,11 +27,15 @@ usage() {
 }
 
 check_env() {
-  nbr=$(for prg in "$@"
-    do
-      command -v "$prg" || error "Command $prg not found."
-    done | wc -l)
-  return $(($# - nbr))
+  err=0
+  for prg in "$@"
+  do
+    command -v "$prg" >/dev/null || {
+      error "Command $prg not found."
+      err=1
+    }
+  done
+  return $err
 }
 
 check_env xargs lame faac || exit 1
