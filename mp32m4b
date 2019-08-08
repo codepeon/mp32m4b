@@ -1,13 +1,13 @@
 #!/usr/bin/env sh
 # Dependencies: coreutils, lame, faac and findutils
 
-error() {
+error() (
   prg="$(basename "$0")"
   msg="$1"
   echo "$prg: $msg" 1>&2
-}
+)
 
-usage() {
+usage() (
   prg="$(basename "$0")"
   echo "A tool to convert mp3 files to one m4b file."
   echo "Takes a list of mp3 files to convert on stdin (absolute paths)."
@@ -24,9 +24,9 @@ usage() {
   echo ""
   echo "Example:"
   echo "    ls ~/book/**.mp3 | sort -n | $prg -a \"John Doe\" -b \"Seeds\""
-}
+)
 
-check_env() {
+check_env() (
   err=0
   for prg in "$@"
   do
@@ -36,7 +36,7 @@ check_env() {
     }
   done
   return $err
-}
+)
 
 check_env xargs lame faac || exit 1
 
