@@ -21,6 +21,7 @@ usage() (
   echo "    -a    Author"
   echo "    -b    Book title"
   echo "    -o    Output directory"
+  echo "    -v    Verbose output"
   echo ""
   echo "Example:"
   echo "    ls ~/book/**.mp3 | sort -n | $prg -a \"John Doe\" -b \"Seeds\""
